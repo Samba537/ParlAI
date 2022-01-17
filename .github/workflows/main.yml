@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  Stage1:
+    name: Build Containers
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: next_version
+        uses: zwaldowski/semver-release-action@v1
+        with:
+          dry_run: true
+          bump: ${{ … }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git add .
+          git commit -m "Bump version"
+          git push
+          echo ::set-output name=sha::$(git rev-parse HEAD)
+        uses: zwaldowski/semver-release-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          sha: ${{ steps.git_commit.outputs.sha }}
+
+      - name: Setup Env
+        run: |
+          cd ~/ParlAI
+          python setup.py develop
+
+      - name: Install pytest
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+        # Run the tests. I'm using pytest and the file is in the tests directory.
+      - name: Run tests
+        run: pytest ./tests/test-*
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build Helm Docker Image
+        uses: docker/build-push-action@v2
+        with:
+          file: ./Dockerfile.Helm
+          context: .
+          push: ${{ env.SHOULD_TAG=='true' }}
+          tags: ${{ env.DOCKER_REGISTRY }}/helm:$(git rev-parse HEAD)
+      
+      - name: Determine If Master
+        run: |
+          release_branch=$(test "$(git rev-parse HEAD)" = refs/heads/master && echo true || echo false)
+          echo "Is this a release branch? ${release_branch}"
+          echo "SHOULD_TAG=${release_branch}" >> $GITHUB_ENV
