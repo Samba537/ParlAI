@@ -25,3 +25,9 @@ So basically the next steps should be pull the image and deploy the image as doc
 
 NOTE:
 Github actions workflow required some secrets and intial tags on the repo to pass that why its failing right now. I just added the workflow skelton for understanding.
+
+Issues Encountered:
+
+Multiple .py scripts in multiple folders to need to add into docker image, so added them as a folder under /app
+Few Dependencies are not upto date, so its having issues during the env setup ( this can be resolved by looking at the new packages or upgrades by going through each one of those in each build failure)
+Next one is Codecov is not properly enabled for code coverage reports
