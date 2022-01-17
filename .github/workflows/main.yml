@@ -23,11 +23,13 @@ jobs:
         with:
           dry_run: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Git Commands
         run: |
           git add .
           git commit -m "Bump version"
           git push
           echo ::set-output name=sha::$(git rev-parse HEAD)
+      - name: Semver release action
         uses: zwaldowski/semver-release-action@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
