@@ -20,3 +20,8 @@ Using the python3.9 image as base image and Add the python scripts and required 
 Here is the dockerfile: Dockerfile.Helm
 
 
+So basically the next steps should be pull the image and deploy the image as docker container based on the environment we use (Docker Swarm, Kubernetes, Cloud Native). 
+
+
+NOTE:
+Github actions workflow required some secrets and intial tags on the repo to pass that why its failing right now. I just added the workflow skelton for understanding.
