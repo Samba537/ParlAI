@@ -12,7 +12,6 @@ jobs:
   Stage1:
     name: Build Containers
     runs-on: ubuntu-latest
-    options: --user root
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
