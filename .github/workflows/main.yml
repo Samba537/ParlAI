@@ -19,16 +19,9 @@ jobs:
           fetch-depth: 0
 
       - name: next_version
-        uses: zwaldowski/semver-release-action@v1
+        uses: zwaldowski/match-label-action@v1
         with:
-          dry_run: true
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Git Commands
-        run: |
-          git add .
-          git commit -m "Bump version"
-          git push
-          echo ::set-output name=sha::$(git rev-parse HEAD)
+          allowed: major,minor,patch
       - name: Semver release action
         uses: zwaldowski/semver-release-action@v1
         with:
