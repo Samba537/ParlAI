@@ -33,8 +33,7 @@ jobs:
           message: '${{ steps.bump-semver.outputs.new_version }}: PR #${{ github.event.pull_request.number }} ${{ github.event.pull_request.title }}'
       - name: Setup Env
         run: |
-          cd ~/ParlAI
-          python setup.py develop
+          python ./setup.py develop
 
       - name: Install pytest
         run: |
